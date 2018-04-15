@@ -4,7 +4,7 @@ public class AndSpecification<T> extends CompositeSpecification<T> {
     Specification<T> left;
     Specification<T> right;
 
-    AndSpecification( Specification<T> left, Specification<T> right ) {
+    public AndSpecification( Specification<T> left, Specification<T> right ) {
         this.left = left;
         this.right = right;
     }

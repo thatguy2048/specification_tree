@@ -1,4 +1,5 @@
 import customSpecification.DateCompareSpecification;
+import specification.AndSpecification;
 import specification.CompositeSpecification;
 import specification.NotSpecification;
 import specification.Specification;
@@ -16,24 +17,33 @@ public class Main {
         Transaction currentTransaction;
 
 
-        //Get the date at the start of the year.
+        //Date creator
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        Date thisYear = sdf.parse("01/01/2018");
 
         //Product representative specification
         ProductNameSpecification productSpec = new ProductNameSpecification("flamethrower");
 
         //Product representative specification
         Specification<Transaction> PRSpec = productSpec.and(
-                new TransactionDateSpecification(thisYear))
+                new TransactionDateSpecification(sdf.parse("01/01/2018")))
                 .and(new NotSpecification<Transaction>(new TransactionTypeSpecification(TransactionType.OTHER)));
+
+        //Quality Assurance Specification
+        CompositeSpecification<Transaction> QASpec = new AndSpecification<Transaction>(
+                new TransactionDateSpecification(sdf.parse("01/03/2018")),
+                new TransactionTypeSpecification((TransactionType.RETURN))
+        );
 
         do{
             currentTransaction = transactionFactory.generateRandomTransaction();
             System.out.println(currentTransaction);
 
             if( PRSpec.isSatisfiedBy(currentTransaction) ){
-                System.out.println("Show Transaction");
+                System.out.println("Show PR Transaction");
+            }
+
+            if( QASpec.isSatisfiedBy(currentTransaction) ){
+                System.out.println("Show QA Transaction");
             }
 
         }while(!reader.nextLine().contains("exit"));
